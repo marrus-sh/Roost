@@ -1,0 +1,28 @@
+{
+  "name": "Roost",
+  "version": "0.1.0",
+  "author": {
+    "name": "Kyebego",
+    "url": "https://go.KIBI.family/"
+  },
+  "license": "GPL-3.0-or-later",
+  "description": "🐦☕️ A library for Cake builds",
+  "homepage": "https://github.com/marrus-sh/Roost#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marrus-sh/Roost.git"
+  },
+  "bugs": "https://github.com/marrus-sh/Roost/issues",
+  "dependencies": {
+    "@babel/core": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "coffeescript": "^2.3.2",
+    "uglify-js": "^3.1.1"
+  },
+  "directories": { "lib": "./Build" },
+  "main": "Build/Roost.js",
+  "scripts": {
+    "prepare": "cake build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
