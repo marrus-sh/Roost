@@ -26,7 +26,7 @@ The following is a sample `Cakefile` which makes use of this system:
 >     destination: "Build/"  #  Default: "dist/"
 >     literate: yes  #  Default: no
 >     name: "MyApp"  #  Default: "index"
->     order: [  #  The build order; all files must be lsited here
+>     order: [  #  The build order; all files must be listed here
 >       "file1"
 >       "file2"
 >     ]
