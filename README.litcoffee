@@ -87,8 +87,8 @@ The `configure` function configures the above values based on the
       preamble = (
         if options.preamble? then "#{options.preamble}" else null
       ) unless options.preamble is undefined
-      prefix = "#{options.prefix}" if options.prefix
-      suffix = "#{options.suffix}" if options.suffix
+      prefix = "#{options.prefix}" if options.prefix?
+      suffix = "#{options.suffix}" if options.suffix?
 
 ##  File loading  ##
 

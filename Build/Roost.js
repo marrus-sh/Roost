@@ -42,11 +42,11 @@
       preamble = options.preamble != null ? "".concat(options.preamble) : null;
     }
 
-    if (options.prefix) {
+    if (options.prefix != null) {
       prefix = "".concat(options.prefix);
     }
 
-    if (options.suffix) {
+    if (options.suffix != null) {
       return suffix = "".concat(options.suffix);
     }
   };
