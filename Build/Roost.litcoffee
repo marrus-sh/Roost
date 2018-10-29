@@ -1,7 +1,7 @@
 <div align="right">
   <b><cite>Roost</cite></b><br />
   Source and Documentation<br />
-  <code>README.coffee.md</code>
+  <code>README.md</code>
   <hr />
   <div align="justify">
     Copyright © 2018 Kyebego.

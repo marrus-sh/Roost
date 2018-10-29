@@ -2,7 +2,7 @@ cs = require 'coffeescript'
 fs = require 'fs'
 
 prepAndDo = (task) ->
-  fs.readFile "README.coffee.md", "utf8", (error, data) ->
+  fs.readFile "README.md", "utf8", (error, data) ->
     throw error if error
     exports = {}  #  Overrides `exports`
     eval cs.compile data, literate: yes
@@ -12,7 +12,7 @@ prepAndDo = (task) ->
       name: "Roost"
       order: [ "README" ]
       prefix: "./"
-      suffix: ".coffee.md"
+      suffix: ".md"
     do exports[task]
 
 task "build", "build Roost", -> prepAndDo "build"
