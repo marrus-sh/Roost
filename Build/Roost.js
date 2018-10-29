@@ -116,6 +116,7 @@
 
           if (stdout || stderr) {
             console.log((stdout || "") + (stderr || ""));
+            return;
           }
 
           return callback(compiled);
@@ -136,6 +137,7 @@
 
         if (stdout || stderr) {
           console.log((stdout || "") + (stderr || ""));
+          return;
         }
 
         return console.log("…Done.");

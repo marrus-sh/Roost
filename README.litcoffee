@@ -176,7 +176,9 @@ Note the `-t` flag; Babel is used for transpiling into an
         " else "coffee -cpt #{stitched} > #{compiled}"
       ), (error, stdout, stderr) ->
         throw error if error
-        console.log (stdout or "") + (stderr or "") if stdout or stderr
+        if stdout or stderr
+          console.log (stdout or "") + (stderr or "")
+          return
         callback compiled
       return
 
@@ -198,7 +200,9 @@ The `minify()` function accomplishes this:
         "
       ), (error, stdout, stderr) ->
         throw error if error
-        console.log (stdout or "") + (stderr or "") if stdout or stderr
+        if stdout or stderr
+          console.log (stdout or "") + (stderr or "")
+          return
         console.log "…Done."
       return
 
