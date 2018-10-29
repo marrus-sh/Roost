@@ -241,14 +241,13 @@ The `clear()` function clears out the files that we created above:
 <footer>
   <details>
   <summary>License notice</summary>
-  <p>This program is free software is free software: you can
-    redistribute it and/or modify it under the terms of the GNU
-    General Public License as published by the Free Software
-    Foundation, either version 3 of the License, or (at your option)
-    any later version. Similarly, you can redistribute and/or modify
-    the documentation sections of this document under the terms of the
-    Creative Commons Attribution-ShareAlike 4.0 International
-    License.</p>
+  <p>This program is free software: you can redistribute it and/or
+    modify it under the terms of the GNU General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version. Similarly, you can
+    redistribute and/or modify the documentation sections of this
+    document under the terms of the Creative Commons
+    Attribution-ShareAlike 4.0 International License.</p>
   <p>This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
