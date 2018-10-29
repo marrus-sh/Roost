@@ -6,6 +6,6 @@
 
 Initial release.
 
-###  Patch 1
+####  Patch 1.
 
 `prefix` and `suffix` may now be set to the empty string.
