@@ -2,6 +2,11 @@
 
 ##  Version 0  ##
 
+###  0.3 Release:
+
+Filenames may now contain quotes and special characters without issue.
+`preamble` and `postamble` configuration options may now be arrays.
+
 ###  0.2 Release:
 
 Added `setup` and `polish` hooks, and the `postamble` property.

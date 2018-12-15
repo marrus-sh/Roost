@@ -1,12 +1,17 @@
 "use strict";
 
 (function () {
-  var build, clear, collect, compile, configure, destination, exec, fs, literate, minify, name, order, polish, postamble, preamble, prefix, setup, stitch, suffix, watch;
+  var build, clear, collect, compile, configure, destination, exec, fs, literate, minify, name, order, polish, postamble, preamble, prefix, quote, setup, stitch, suffix, watch;
   fs = require('fs');
 
   var _require = require('child_process');
 
   exec = _require.exec;
+
+  quote = function quote(string) {
+    return "'".concat(String.prototype.replace.call(string, /'/g, "'\\''"), "'");
+  };
+
   destination = "dist/";
   literate = false;
   name = "index";
@@ -46,11 +51,11 @@
     }
 
     if (options.postamble !== void 0) {
-      postamble = options.postamble != null ? "".concat(options.postamble) : null;
+      postamble = options.postamble != null ? [].concat(options.postamble).map(quote).join(" ") : null;
     }
 
     if (options.preamble !== void 0) {
-      preamble = options.preamble != null ? "".concat(options.preamble) : null;
+      preamble = options.preamble != null ? [].concat(options.preamble).map(quote).join(" ") : null;
     }
 
     if (options.prefix != null) {
@@ -127,16 +132,16 @@
         exec(function () {
           switch (false) {
             case !(preamble != null && postamble != null):
-              return "./node_modules/.bin/coffee -cpt ".concat(stitched, " | cat ").concat(preamble, " - ").concat(postamble, " > ").concat(compiled);
+              return "./node_modules/.bin/coffee -cpt ".concat(quote(stitched), " | cat ").concat(preamble, " - ").concat(postamble, " > ").concat(quote(compiled));
 
             case preamble == null:
-              return "./node_modules/.bin/coffee -cpt ".concat(stitched, " | cat ").concat(preamble, " - > ").concat(compiled);
+              return "./node_modules/.bin/coffee -cpt ".concat(quote(stitched), " | cat ").concat(preamble, " - > ").concat(quote(compiled));
 
             case postamble == null:
-              return "./node_modules/.bin/coffee -cpt ".concat(stitched, " | cat - ").concat(postamble, " > ").concat(compiled);
+              return "./node_modules/.bin/coffee -cpt ".concat(quote(stitched), " | cat - ").concat(postamble, " > ").concat(quote(compiled));
 
             default:
-              return "./node_modules/.bin/coffee -cpt ".concat(stitched, " > ").concat(compiled);
+              return "./node_modules/.bin/coffee -cpt ".concat(quote(stitched), " > ").concat(quote(compiled));
           }
         }(), function (error, stdout, stderr) {
           if (error) {
@@ -159,7 +164,7 @@
       var minified;
       console.log("Minifying…");
       minified = compiled.replace(/\.js$/, ".min.js");
-      exec(preamble != null ? "./node_modules/.bin/uglifyjs ".concat(compiled, " -c | cat ").concat(preamble, " - > ").concat(minified) : "./node_modules/.bin/uglifyjs ".concat(compiled, " -c > ").concat(minified), function (error, stdout, stderr) {
+      exec(preamble != null ? "./node_modules/.bin/uglifyjs ".concat(quote(compiled), " -c | cat ").concat(preamble, " - > ").concat(quote(minified)) : "./node_modules/.bin/uglifyjs ".concat(quote(compiled), " -c > ").concat(quote(minified)), function (error, stdout, stderr) {
         if (error) {
           throw error;
         }

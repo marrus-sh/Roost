@@ -33,8 +33,8 @@ The following is a sample `Cakefile` which makes use of this system:
 >       "file2"
 >     ]
 >     polish: null  #  Called after builds
->     postamble: "data.js"  #  Default: null
->     preamble: "NOTICE.js"  #  Default: null
+>     postamble: "data.js"  #  Default: null; may be string or array
+>     preamble: "NOTICE.js"  #  Default: null; may be string or array
 >     prefix: "Sources/"  #  Default: "src/"
 >     setup: null  #  Called before builds
 >     suffix: ".litcoffee"  #  Default: ".coffee"
@@ -68,6 +68,15 @@ So, Roost requires `fs` and `child_process`:
     fs = require 'fs'
     { exec } = require 'child_process'
 
+##  String Handling  ##
+
+The internal `quote` function quotes and escapes a string for use in
+  commands.
+
+    quote = (string) -> "'#{
+      String::replace.call string, /'/g, "'\\''"
+    }'"
+
 ##  Configuration  ##
 
 The following are our default configuration values:
@@ -83,8 +92,8 @@ The following are our default configuration values:
     setup = null
     suffix = ".coffee"
 
-The `configure` function configures the above values based on the
-  properties of its argument.
+The exported `configure` function configures the above values based on
+  the properties of its argument.
 
     exports.configure = configure = (options = {}) ->
       return unless options?
@@ -95,11 +104,15 @@ The `configure` function configures the above values based on the
       polish = options.polish if options.polish is null or (
         typeof options.polish is "function"
       )
-      postamble = (
-        if options.postamble? then "#{options.postamble}" else null
+      postamble = (  #  Internally, quoted and space-separated
+        if options.postamble? then (
+          ([].concat options.postamble).map quote
+        ).join " " else null
       ) unless options.postamble is undefined
-      preamble = (
-        if options.preamble? then "#{options.preamble}" else null
+      preamble = (  #  Internally, quoted and space-separated
+        if options.preamble? then (
+          ([].concat options.preamble).map quote
+        ).join " " else null
       ) unless options.preamble is undefined
       prefix = "#{options.prefix}" if options.prefix?
       setup = options.setup if options.setup is null or (
@@ -168,8 +181,9 @@ The `destination` folder is created if it doesn't exist.
 
       fs.mkdir destination, (error) ->
         throw error if error and error.code isnt 'EEXIST'
-        output =
-          "#{destination}#{name}.#{literate and "lit" or ""}coffee"
+        output = "
+          #{destination}#{name}.#{literate and "lit" or ""}coffee
+        "
         fs.writeFile output, stitched, "utf-8", (error) ->
             throw error if error
             callback output
@@ -190,19 +204,20 @@ Note the `-t` flag; Babel is used for transpiling into an
       exec (
         switch
           when preamble? and postamble? then "
-            ./node_modules/.bin/coffee -cpt #{stitched} |
-            cat #{preamble} - #{postamble} > #{compiled}
+            ./node_modules/.bin/coffee -cpt #{quote stitched} |
+            cat #{preamble} - #{postamble} > #{quote compiled}
           "
           when preamble? then "
-            ./node_modules/.bin/coffee -cpt #{stitched} |
-            cat #{preamble} - > #{compiled}
+            ./node_modules/.bin/coffee -cpt #{quote stitched} |
+            cat #{preamble} - > #{quote compiled}
           "
           when postamble? then "
-            ./node_modules/.bin/coffee -cpt #{stitched} |
-            cat - #{postamble} > #{compiled}
+            ./node_modules/.bin/coffee -cpt #{quote stitched} |
+            cat - #{postamble} > #{quote compiled}
           "
           else "
-            ./node_modules/.bin/coffee -cpt #{stitched} > #{compiled}
+            ./node_modules/.bin/coffee -cpt #{quote stitched} >
+            #{quote compiled}
           "
       ), (error, stdout, stderr) ->
         throw error if error
@@ -223,10 +238,11 @@ The `minify()` function accomplishes this:
       minified = compiled.replace /\.js$/, ".min.js"
       exec (
         if preamble? then "
-          ./node_modules/.bin/uglifyjs #{compiled} -c |
-          cat #{preamble} - > #{minified}
+          ./node_modules/.bin/uglifyjs #{quote compiled} -c |
+          cat #{preamble} - > #{quote minified}
         " else "
-          ./node_modules/.bin/uglifyjs #{compiled} -c > #{minified}
+          ./node_modules/.bin/uglifyjs #{quote compiled} -c >
+          #{quote minified}
         "
       ), (error, stdout, stderr) ->
         throw error if error
