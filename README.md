@@ -32,8 +32,11 @@ The following is a sample `Cakefile` which makes use of this system:
 >       "file1"
 >       "file2"
 >     ]
+>     polish: null  #  Called after builds
+>     postamble: "data.js"  #  Default: null
 >     preamble: "NOTICE.js"  #  Default: null
 >     prefix: "Sources/"  #  Default: "src/"
+>     setup: null  #  Called before builds
 >     suffix: ".litcoffee"  #  Default: ".coffee"
 >
 >   task "build", "build MyApp", build
@@ -73,8 +76,11 @@ The following are our default configuration values:
     literate = no
     name = "index"
     order = []
+    polish = null
+    postamble = null
     preamble = null
     prefix = "src/"
+    setup = null
     suffix = ".coffee"
 
 The `configure` function configures the above values based on the
@@ -86,10 +92,19 @@ The `configure` function configures the above values based on the
       literate = !!options.literate if options.literate?
       name = "#{options.name}" if options.name
       order = [].concat options.order if options.order
+      polish = options.polish if options.polish is null or (
+        typeof options.polish is "function"
+      )
+      postamble = (
+        if options.postamble? then "#{options.postamble}" else null
+      ) unless options.postamble is undefined
       preamble = (
         if options.preamble? then "#{options.preamble}" else null
       ) unless options.preamble is undefined
       prefix = "#{options.prefix}" if options.prefix?
+      setup = options.setup if options.setup is null or (
+        typeof options.setup is "function"
+      )
       suffix = "#{options.suffix}" if options.suffix?
 
 ##  File loading  ##
@@ -164,7 +179,8 @@ The `destination` folder is created if it doesn't exist.
 
 The `compile()` function compiles the stitched file.
 It's pretty simple—it just executes `coffee`, adding the `preamble`
-  to the beginning of the file with `cat`.
+  to the beginning of the file and `postamble` to the ending with
+  `cat`.
 Note the `-t` flag; Babel is used for transpiling into an
   ECMAScript 5.1–compatible form.
 
@@ -172,10 +188,22 @@ Note the `-t` flag; Babel is used for transpiling into an
       console.log "Compiling…"
       compiled = stitched.replace /\.(?:lit)?coffee$/i, ".js"
       exec (
-        if preamble? then "
-          ./node_modules/.bin/coffee -cpt #{stitched} |
-          cat #{preamble} - > #{compiled}
-        " else "coffee -cpt #{stitched} > #{compiled}"
+        switch
+          when preamble? and postamble? then "
+            ./node_modules/.bin/coffee -cpt #{stitched} |
+            cat #{preamble} - #{postamble} > #{compiled}
+          "
+          when preamble? then "
+            ./node_modules/.bin/coffee -cpt #{stitched} |
+            cat #{preamble} - > #{compiled}
+          "
+          when postamble? then "
+            ./node_modules/.bin/coffee -cpt #{stitched} |
+            cat - #{postamble} > #{compiled}
+          "
+          else "
+            ./node_modules/.bin/coffee -cpt #{stitched} > #{compiled}
+          "
       ), (error, stdout, stderr) ->
         throw error if error
         if stdout or stderr
@@ -210,9 +238,13 @@ The `minify()` function accomplishes this:
 
 ##  Building  ##
 
-The `build()` function just links all of the above functions together:
+The `build()` function just links all of the above functions together,
+  adding our `setup()` and `polish()` hooks:
 
-    exports.build = build = -> minify compile stitch do collect
+    exports.build = build = ->
+      do setup if setup?
+      minify compile stitch do collect
+      do polish if polish?
 
 ##  Watching  ##
 

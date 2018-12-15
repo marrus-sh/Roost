@@ -1,7 +1,7 @@
 "use strict";
 
 (function () {
-  var build, clear, collect, compile, configure, destination, exec, fs, literate, minify, name, order, preamble, prefix, stitch, suffix, watch;
+  var build, clear, collect, compile, configure, destination, exec, fs, literate, minify, name, order, polish, postamble, preamble, prefix, setup, stitch, suffix, watch;
   fs = require('fs');
 
   var _require = require('child_process');
@@ -11,8 +11,11 @@
   literate = false;
   name = "index";
   order = [];
+  polish = null;
+  postamble = null;
   preamble = null;
   prefix = "src/";
+  setup = null;
   suffix = ".coffee";
 
   exports.configure = configure = function configure() {
@@ -38,12 +41,24 @@
       order = [].concat(options.order);
     }
 
+    if (options.polish === null || typeof options.polish === "function") {
+      polish = options.polish;
+    }
+
+    if (options.postamble !== void 0) {
+      postamble = options.postamble != null ? "".concat(options.postamble) : null;
+    }
+
     if (options.preamble !== void 0) {
       preamble = options.preamble != null ? "".concat(options.preamble) : null;
     }
 
     if (options.prefix != null) {
       prefix = "".concat(options.prefix);
+    }
+
+    if (options.setup === null || typeof options.setup === "function") {
+      setup = options.setup;
     }
 
     if (options.suffix != null) {
@@ -109,7 +124,21 @@
         var compiled;
         console.log("Compiling…");
         compiled = stitched.replace(/\.(?:lit)?coffee$/i, ".js");
-        exec(preamble != null ? "./node_modules/.bin/coffee -cpt ".concat(stitched, " | cat ").concat(preamble, " - > ").concat(compiled) : "coffee -cpt ".concat(stitched, " > ").concat(compiled), function (error, stdout, stderr) {
+        exec(function () {
+          switch (false) {
+            case !(preamble != null && postamble != null):
+              return "./node_modules/.bin/coffee -cpt ".concat(stitched, " | cat ").concat(preamble, " - ").concat(postamble, " > ").concat(compiled);
+
+            case preamble == null:
+              return "./node_modules/.bin/coffee -cpt ".concat(stitched, " | cat ").concat(preamble, " - > ").concat(compiled);
+
+            case postamble == null:
+              return "./node_modules/.bin/coffee -cpt ".concat(stitched, " | cat - ").concat(postamble, " > ").concat(compiled);
+
+            default:
+              return "./node_modules/.bin/coffee -cpt ".concat(stitched, " > ").concat(compiled);
+          }
+        }(), function (error, stdout, stderr) {
           if (error) {
             throw error;
           }
@@ -146,7 +175,15 @@
   };
 
   exports.build = build = function build() {
-    return minify(compile(stitch(collect())));
+    if (setup != null) {
+      setup();
+    }
+
+    minify(compile(stitch(collect())));
+
+    if (polish != null) {
+      return polish();
+    }
   };
 
   exports.watch = watch = function watch() {

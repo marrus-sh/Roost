@@ -2,6 +2,10 @@
 
 ##  Version 0  ##
 
+###  0.2 Release:
+
+Added `setup` and `polish` hooks, and the `postamble` property.
+
 ###  0.1 Release:
 
 Initial release.

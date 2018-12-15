@@ -11,7 +11,7 @@ prepAndDo = (task) ->
       literate: yes
       name: "Roost"
       order: [ "README" ]
-      prefix: "./"
+      prefix: ""
       suffix: ".md"
     do exports[task]
 
