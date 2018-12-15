@@ -1,6 +1,6 @@
 <header>
   <div align="right">
-    <b><cite>Roost</cite></b> <i>(version 0.1.1)</i><br />
+    <b><cite>Roost</cite></b><br />
     Source and Documentation<br />
     <code>README.md</code>
   </div>
