@@ -286,6 +286,19 @@ The `clear()` function clears out the files that we created above:
       fs.unlink "#{base}.js", ->
       fs.unlink "#{base}.min.js", ->
 
+##  Identity  ##
+
+The exported `ℹ` and `Nº` properties give the API and version number,
+  respectively.
+
+    exports.ℹ = "https://go.KIBI.family/Roost/"
+    exports.Nº = Object.freeze
+      major: 0
+      minor: 3
+      patch: 1
+      toString: -> "#{@major}.#{@minor}.#{@patch}"
+      valueOf: -> @major * 100 + @minor + @patch / 100
+
 <footer>
   <details>
   <summary>License notice</summary>

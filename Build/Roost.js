@@ -220,4 +220,17 @@
     fs.unlink("".concat(base, ".js"), function () {});
     return fs.unlink("".concat(base, ".min.js"), function () {});
   };
+
+  exports.ℹ = "https://go.KIBI.family/Roost/";
+  exports.Nº = Object.freeze({
+    major: 0,
+    minor: 3,
+    patch: 1,
+    toString: function toString() {
+      return "".concat(this.major, ".").concat(this.minor, ".").concat(this.patch);
+    },
+    valueOf: function valueOf() {
+      return this.major * 100 + this.minor + this.patch / 100;
+    }
+  });
 }).call(void 0);

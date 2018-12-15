@@ -1,6 +1,6 @@
 <header>
   <div align="right">
-    <b><cite>Roost</cite></b> <i>(version 0.1.1)</i><br />
+    <b><cite>Roost</cite></b><br />
     Source and Documentation<br />
     <code>README.md</code>
   </div>
@@ -285,6 +285,19 @@ The `clear()` function clears out the files that we created above:
       fs.unlink "#{base}.#{literate and "lit" or ""}coffee", ->
       fs.unlink "#{base}.js", ->
       fs.unlink "#{base}.min.js", ->
+
+##  Identity  ##
+
+The exported `ℹ` and `Nº` properties give the API and version number,
+  respectively.
+
+    exports.ℹ = "https://go.KIBI.family/Roost/"
+    exports.Nº = Object.freeze
+      major: 0
+      minor: 3
+      patch: 1
+      toString: -> "#{@major}.#{@minor}.#{@patch}"
+      valueOf: -> @major * 100 + @minor + @patch / 100
 
 <footer>
   <details>
