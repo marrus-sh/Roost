@@ -11,6 +11,14 @@ Filenames may now contain quotes and special characters without issue.
 
 Added identity information, and tests to ensure that it is current.
 
+####  Patch 2.
+
+Removed the extra preamble added during the minify step.
+See UglifyJS docs to see how to ensure comments are not removed during
+  minification.
+
+An error (incorrect ID) in the identity tests was corrected.
+
 ###  0.2 Release:
 
 Added `setup` and `polish` hooks, and the `postamble` property.

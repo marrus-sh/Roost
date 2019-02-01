@@ -7,7 +7,7 @@
   <hr />
   <div align="justify">
     <small>
-      Copyright © 2018 Kyebego.
+      Copyright © 2018–2019 Kyebego.
       Code released under GNU GPLv3 (or any later version);
         documentation released under CC BY-SA 4.0.
       For more information, see the license notice at the bottom of
@@ -230,17 +230,13 @@ Note the `-t` flag; Babel is used for transpiling into an
 ##  Minifying  ##
 
 Finally, UglifyJS minifies the final output.
-The `preamble` is again added to the beginning of the file.
 The `minify()` function accomplishes this:
 
     minify = (compiler) -> compiler (compiled) ->
       console.log "Minifying…"
       minified = compiled.replace /\.js$/, ".min.js"
       exec (
-        if preamble? then "
-          ./node_modules/.bin/uglifyjs #{quote compiled} -c |
-          cat #{preamble} - > #{quote minified}
-        " else "
+        "
           ./node_modules/.bin/uglifyjs #{quote compiled} -c >
           #{quote minified}
         "
@@ -295,7 +291,7 @@ The exported `ℹ` and `Nº` properties give the API and version number,
     exports.Nº = Object.freeze
       major: 0
       minor: 3
-      patch: 1
+      patch: 2
       toString: -> "#{@major}.#{@minor}.#{@patch}"
       valueOf: -> @major * 100 + @minor + @patch / 100
 

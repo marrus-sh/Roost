@@ -5,7 +5,7 @@ describe "Identity", ->
 
   it "has the correct API ID", ->
     expect ℹ
-      .equals "https://go.KIBI.family/langtag/"
+      .equals "https://go.KIBI.family/Roost/"
 
   it "has the correct version", ->
     packageVersion = process.env.npm_package_version
