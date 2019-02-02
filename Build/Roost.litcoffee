@@ -38,6 +38,9 @@ The following is a sample `Cakefile` which makes use of this system:
 >     prefix: "Sources/"  #  Default: "src/"
 >     setup: null  #  Called before builds
 >     suffix: ".litcoffee"  #  Default: ".coffee"
+>     watching: [  #  Additional files to watch for changes
+>       "src/style.scss"
+>     ]
 >
 >   task "build", "build MyApp", build
 >   task "watch", "build MyApp and watch for changes", watch
@@ -91,6 +94,7 @@ The following are our default configuration values:
     prefix = "src/"
     setup = null
     suffix = ".coffee"
+    watching = []
 
 The exported `configure` function configures the above values based on
   the properties of its argument.
@@ -119,6 +123,7 @@ The exported `configure` function configures the above values based on
         typeof options.setup is "function"
       )
       suffix = "#{options.suffix}" if options.suffix?
+      watching = [].concat options.watching if options.watching
 
 ##  File loading  ##
 
@@ -265,12 +270,15 @@ The `watch()` function builds, then watches for changes and
 
     exports.watch = watch = ->
       do build
+      watcher = (name) -> (type) ->
+        return unless type is "change"
+        console.log "File `#{name}` changed, rebuilding..."
+        do build
       for file in order
         do (file) ->
-          fs.watch "#{prefix}#{file}#{suffix}", "utf8", (type) ->
-            return unless type is "change"
-            console.log "File `#{file}` changed, rebuilding..."
-            do build
+          fs.watch "#{prefix}#{file}#{suffix}", "utf8", watcher file
+      for file in watching
+        do (file) -> fs.watch file, "utf8", watcher file
 
 ##  Clearing  ##
 
@@ -290,8 +298,8 @@ The exported `ℹ` and `Nº` properties give the API and version number,
     exports.ℹ = "https://go.KIBI.family/Roost/"
     exports.Nº = Object.freeze
       major: 0
-      minor: 3
-      patch: 3
+      minor: 4
+      patch: 0
       toString: -> "#{@major}.#{@minor}.#{@patch}"
       valueOf: -> @major * 100 + @minor + @patch / 100
 

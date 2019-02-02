@@ -1,7 +1,7 @@
 "use strict";
 
 (function () {
-  var build, clear, collect, compile, configure, destination, exec, fs, literate, minify, name, order, polish, postamble, preamble, prefix, quote, setup, stitch, suffix, watch;
+  var build, clear, collect, compile, configure, destination, exec, fs, literate, minify, name, order, polish, postamble, preamble, prefix, quote, setup, stitch, suffix, watch, watching;
   fs = require('fs');
 
   var _require = require('child_process');
@@ -22,6 +22,7 @@
   prefix = "src/";
   setup = null;
   suffix = ".coffee";
+  watching = [];
 
   exports.configure = configure = function configure() {
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -67,7 +68,11 @@
     }
 
     if (options.suffix != null) {
-      return suffix = "".concat(options.suffix);
+      suffix = "".concat(options.suffix);
+    }
+
+    if (options.watching) {
+      return watching = [].concat(options.watching);
     }
   };
 
@@ -192,21 +197,34 @@
   };
 
   exports.watch = watch = function watch() {
-    var file, i, len, results;
+    var file, i, j, len, len1, results, watcher;
     build();
-    results = [];
+
+    watcher = function watcher(name) {
+      return function (type) {
+        if (type !== "change") {
+          return;
+        }
+
+        console.log("File `".concat(name, "` changed, rebuilding..."));
+        return build();
+      };
+    };
 
     for (i = 0, len = order.length; i < len; i++) {
       file = order[i];
-      results.push(function (file) {
-        return fs.watch("".concat(prefix).concat(file).concat(suffix), "utf8", function (type) {
-          if (type !== "change") {
-            return;
-          }
 
-          console.log("File `".concat(file, "` changed, rebuilding..."));
-          return build();
-        });
+      (function (file) {
+        return fs.watch("".concat(prefix).concat(file).concat(suffix), "utf8", watcher(file));
+      })(file);
+    }
+
+    results = [];
+
+    for (j = 0, len1 = watching.length; j < len1; j++) {
+      file = watching[j];
+      results.push(function (file) {
+        return fs.watch(file, "utf8", watcher(file));
       }(file));
     }
 
@@ -224,8 +242,8 @@
   exports.ℹ = "https://go.KIBI.family/Roost/";
   exports.Nº = Object.freeze({
     major: 0,
-    minor: 3,
-    patch: 3,
+    minor: 4,
+    patch: 0,
     toString: function toString() {
       return "".concat(this.major, ".").concat(this.minor, ".").concat(this.patch);
     },

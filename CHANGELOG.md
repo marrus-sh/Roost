@@ -2,6 +2,11 @@
 
 ##  Version 0  ##
 
+###  0.4 Release:
+
+Additional files to watch can now be specified via the `watching`
+  configuration option.
+
 ###  0.3 Release:
 
 Filenames may now contain quotes and special characters without issue.
