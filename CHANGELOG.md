@@ -19,6 +19,11 @@ See UglifyJS docs to see how to ensure comments are not removed during
 
 An error (incorrect ID) in the identity tests was corrected.
 
+####  Patch 3.
+
+UglifyJS now always uses `--comments some` even when `.babelrc` would
+  imply otherwise.
+
 ###  0.2 Release:
 
 Added `setup` and `polish` hooks, and the `postamble` property.

@@ -164,7 +164,7 @@
       var minified;
       console.log("Minifying…");
       minified = compiled.replace(/\.js$/, ".min.js");
-      exec("./node_modules/.bin/uglifyjs ".concat(quote(compiled), " -c > ").concat(quote(minified)), function (error, stdout, stderr) {
+      exec("./node_modules/.bin/uglifyjs ".concat(quote(compiled), " -c --comments some > ").concat(quote(minified)), function (error, stdout, stderr) {
         if (error) {
           throw error;
         }
@@ -225,7 +225,7 @@
   exports.Nº = Object.freeze({
     major: 0,
     minor: 3,
-    patch: 2,
+    patch: 3,
     toString: function toString() {
       return "".concat(this.major, ".").concat(this.minor, ".").concat(this.patch);
     },

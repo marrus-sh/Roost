@@ -237,8 +237,8 @@ The `minify()` function accomplishes this:
       minified = compiled.replace /\.js$/, ".min.js"
       exec (
         "
-          ./node_modules/.bin/uglifyjs #{quote compiled} -c >
-          #{quote minified}
+          ./node_modules/.bin/uglifyjs #{quote compiled} -c
+          --comments some > #{quote minified}
         "
       ), (error, stdout, stderr) ->
         throw error if error
@@ -291,7 +291,7 @@ The exported `ℹ` and `Nº` properties give the API and version number,
     exports.Nº = Object.freeze
       major: 0
       minor: 3
-      patch: 2
+      patch: 3
       toString: -> "#{@major}.#{@minor}.#{@patch}"
       valueOf: -> @major * 100 + @minor + @patch / 100
 
