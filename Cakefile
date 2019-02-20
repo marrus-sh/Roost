@@ -9,6 +9,7 @@ prepAndDo = (task) ->
     exports.configure
       destination: "Build/"
       literate: yes
+      minify: false
       name: "Roost"
       order: [ "README" ]
       prefix: ""

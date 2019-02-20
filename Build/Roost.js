@@ -1,7 +1,7 @@
 "use strict";
 
 (function () {
-  var build, clear, collect, compile, configure, destination, exec, fs, literate, minify, name, order, polish, postamble, preamble, prefix, quote, setup, stitch, suffix, watch, watching;
+  var build, clear, collect, compile, configure, destination, exec, fs, literate, minify, minifyConfig, name, order, polish, postamble, preamble, prefix, quote, setup, stitch, suffix, watch, watching;
   fs = require('fs');
 
   var _require = require('child_process');
@@ -14,6 +14,7 @@
 
   destination = "dist/";
   literate = false;
+  minifyConfig = null;
   name = "index";
   order = [];
   polish = null;
@@ -38,6 +39,8 @@
     if (options.literate != null) {
       literate = !!options.literate;
     }
+
+    minifyConfig = options.minify != null ? options.minify !== false ? "".concat(options.minify) : false : null;
 
     if (options.name) {
       name = "".concat(options.name);
@@ -167,9 +170,15 @@
   minify = function minify(compiler) {
     return compiler(function (compiled) {
       var minified;
+
+      if (minifyConfig === false) {
+        console.log("…Done.");
+        return;
+      }
+
       console.log("Minifying…");
       minified = compiled.replace(/\.js$/, ".min.js");
-      exec("./node_modules/.bin/uglifyjs ".concat(quote(compiled), " -c --comments some > ").concat(quote(minified)), function (error, stdout, stderr) {
+      exec(minifyConfig != null ? "./node_modules/.bin/uglifyjs ".concat(quote(compiled), " --config-file ").concat(quote(minifyConfig), " > ").concat(quote(minified)) : "./node_modules/.bin/uglifyjs ".concat(quote(compiled), " -c --comments some > ").concat(quote(minified)), function (error, stdout, stderr) {
         if (error) {
           throw error;
         }
@@ -242,7 +251,7 @@
   exports.ℹ = "https://go.KIBI.family/Roost/";
   exports.Nº = Object.freeze({
     major: 0,
-    minor: 4,
+    minor: 5,
     patch: 0,
     toString: function toString() {
       return "".concat(this.major, ".").concat(this.minor, ".").concat(this.patch);

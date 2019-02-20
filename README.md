@@ -27,6 +27,7 @@ The following is a sample `Cakefile` which makes use of this system:
 >   configure
 >     destination: "Build/"  #  Default: "dist/"
 >     literate: yes  #  Default: no
+>     minify: ".uglify.json"  #  Minifier config file; null for default
 >     name: "MyApp"  #  Default: "index"
 >     order: [  #  The build order; all files must be listed here
 >       "file1"
@@ -52,7 +53,7 @@ The above configuration will create the following files on
 
 + `Build/MyApp.litcoffee`
 + `Build/MyApp.js`
-+ `Build/MyApp.min.js`
++ `Build/MyApp.min.js` (unless `minify` is `false`)
 
 Roost uses Babel for transpiling and UglifyJS for minification.
 It is recommended that you set up your `.babelrc` to match
@@ -86,6 +87,7 @@ The following are our default configuration values:
 
     destination = "dist/"
     literate = no
+    minifyConfig = null
     name = "index"
     order = []
     polish = null
@@ -103,6 +105,10 @@ The exported `configure` function configures the above values based on
       return unless options?
       destination = "#{options.destination}" if options.destination?
       literate = !!options.literate if options.literate?
+      minifyConfig = if options.minify? then (
+        if options.minify isnt false then "#{options.minify}"
+        else false
+      ) else null
       name = "#{options.name}" if options.name
       order = [].concat options.order if options.order
       polish = options.polish if options.polish is null or (
@@ -238,10 +244,16 @@ Finally, UglifyJS minifies the final output.
 The `minify()` function accomplishes this:
 
     minify = (compiler) -> compiler (compiled) ->
+      if minifyConfig is false
+        console.log "…Done."
+        return
       console.log "Minifying…"
       minified = compiled.replace /\.js$/, ".min.js"
       exec (
-        "
+        if minifyConfig? then "
+          ./node_modules/.bin/uglifyjs #{quote compiled}
+          --config-file #{quote minifyConfig} > #{quote minified}
+        " else "
           ./node_modules/.bin/uglifyjs #{quote compiled} -c
           --comments some > #{quote minified}
         "
@@ -298,7 +310,7 @@ The exported `ℹ` and `Nº` properties give the API and version number,
     exports.ℹ = "https://go.KIBI.family/Roost/"
     exports.Nº = Object.freeze
       major: 0
-      minor: 4
+      minor: 5
       patch: 0
       toString: -> "#{@major}.#{@minor}.#{@patch}"
       valueOf: -> @major * 100 + @minor + @patch / 100
